@@ -185,7 +185,7 @@ export default function FeedbackPage() {
                 </div>
 
                 <div className="mt-4">
-                  <Link href={`/feedback/${f.id}`}>
+                  <Link href={`/feedback/detail?id=${f.id}`}>
                     <Button variant="outline" size="sm">
                       View Full Feedback
                     </Button>

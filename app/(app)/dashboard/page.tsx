@@ -188,7 +188,7 @@ export default function DashboardPage() {
                   ))}
                 </div>
                 <Link
-                  href={`/feedback/${latestFeedback.id}`}
+                  href={`/feedback/detail?id=${latestFeedback.id}`}
                   className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent-strong"
                 >
                   View Feedback <ArrowRight className="size-3.5" aria-hidden />

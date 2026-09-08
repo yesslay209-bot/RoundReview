@@ -69,7 +69,7 @@ function PhoneScreen({ screen }: { screen: Screen }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- untouched user-provided screenshot, unknown dimensions
     <img
-      src={`/mobile/${screen.key}.png`}
+      src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/mobile/${screen.key}.png`}
       alt={`${screen.label} screen of the mobile app`}
       className="h-full w-full object-cover object-top"
       onError={() => setFailed(true)}

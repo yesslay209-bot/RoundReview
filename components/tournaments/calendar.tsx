@@ -107,7 +107,7 @@ export function TournamentCalendar({ tournaments }: { tournaments: Tournament[] 
                 {events.map((t) => (
                   <Link
                     key={t.id}
-                    href={`/tournaments/${t.id}`}
+                    href={`/tournaments/detail?id=${t.id}`}
                     title={t.name}
                     className="flex items-center gap-1 rounded-md bg-card2 px-1.5 py-1 text-[10px] font-semibold leading-tight text-ink hover:bg-accent/10 transition-colors"
                   >

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Pencil, Quote, TrendingUp, Trash2 } from "lucide-react";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge, ResultBadge } from "@/components/ui/badge";
@@ -14,7 +14,15 @@ import { useToast } from "@/components/ui/toast";
 import { formatDate } from "@/lib/utils";
 
 export default function FeedbackDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  return (
+    <Suspense fallback={null}>
+      <FeedbackDetail />
+    </Suspense>
+  );
+}
+
+function FeedbackDetail() {
+  const id = useSearchParams().get("id");
   const router = useRouter();
   const { data, deleteFeedback } = useAppData();
   const toast = useToast();
@@ -75,7 +83,7 @@ export default function FeedbackDetailPage() {
               <span className="text-faint">Tournament</span>
               {tournament ? (
                 <Link
-                  href={`/tournaments/${tournament.id}`}
+                  href={`/tournaments/detail?id=${tournament.id}`}
                   className="font-semibold text-accent hover:text-accent-strong"
                 >
                   {tournament.name}

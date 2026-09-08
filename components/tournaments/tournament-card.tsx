@@ -71,7 +71,7 @@ export function TournamentCard({
         </div>
 
         <div className="mt-4 flex gap-2">
-          <Link href={`/tournaments/${tournament.id}`}>
+          <Link href={`/tournaments/detail?id=${tournament.id}`}>
             <Button size="sm" variant="outline">
               View Tournament
             </Button>

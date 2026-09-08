@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   CalendarDays,
@@ -28,7 +28,15 @@ import { formatDate, formatDateRange } from "@/lib/utils";
 import type { Round } from "@/lib/types";
 
 export default function TournamentDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  return (
+    <Suspense fallback={null}>
+      <TournamentDetail />
+    </Suspense>
+  );
+}
+
+function TournamentDetail() {
+  const id = useSearchParams().get("id");
   const router = useRouter();
   const { data, deleteTournament, deleteRound } = useAppData();
   const toast = useToast();
@@ -167,7 +175,7 @@ export default function TournamentDetailPage() {
                       </div>
                       <ResultBadge result={r.result} />
                       {r.feedbackId ? (
-                        <Link href={`/feedback/${r.feedbackId}`}>
+                        <Link href={`/feedback/detail?id=${r.feedbackId}`}>
                           <Button variant="outline" size="sm">
                             View Feedback
                           </Button>
