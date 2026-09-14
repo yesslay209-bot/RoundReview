@@ -3,39 +3,39 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --bg: #f6f6f4;
+  --bg: #f7f6f1;
   --card: #ffffff;
-  --card2: #f0f1ee;
-  --line: #e4e5e1;
-  --ink: #10162b;
-  --soft: #4b5268;
-  --faint: #8a90a3;
-  --accent: #3e5bff;
-  --accent-strong: #2740d8;
-  --violet: #7c5cff;
-  --win: #14935c;
-  --loss: #e0442e;
-  --warn: #e79a17;
-  --navy: #0b1024;
-  --ring: #3e5bff;
+  --card2: #f1efe8;
+  --line: #e6e3d8;
+  --ink: #1b1a18;
+  --soft: #56534b;
+  --faint: #9a968b;
+  --accent: #4f46e5;
+  --accent-strong: #3f38c9;
+  --violet: #8b5cf6;
+  --win: #2f7a57;
+  --loss: #c25243;
+  --warn: #d98b12;
+  --navy: #191817;
+  --ring: #4f46e5;
 }
 
 .dark {
-  --bg: #0b0e1a;
-  --card: #12162a;
-  --card2: #181d36;
-  --line: #232945;
-  --ink: #eceef6;
-  --soft: #a6abc4;
-  --faint: #6d7391;
-  --accent: #6b83ff;
-  --accent-strong: #8598ff;
-  --violet: #9d85ff;
-  --win: #2fbf7f;
-  --loss: #f2634e;
-  --warn: #f0b13f;
-  --navy: #070a18;
-  --ring: #6b83ff;
+  --bg: #141311;
+  --card: #1d1b18;
+  --card2: #262420;
+  --line: #35322b;
+  --ink: #edebe4;
+  --soft: #b3afa4;
+  --faint: #7e7a6f;
+  --accent: #9ba5e8;
+  --accent-strong: #b3baf0;
+  --violet: #a78bfa;
+  --win: #4caf82;
+  --loss: #e2705c;
+  --warn: #e8b04b;
+  --navy: #0c0b0a;
+  --ring: #9ba5e8;
 }
 
 @theme inline {
@@ -55,6 +55,7 @@
   --color-navy: var(--navy);
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), var(--font-manrope), ui-sans-serif, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --radius-xl2: 1.125rem;
   --shadow-card: 0 1px 2px rgb(16 22 43 / 0.05), 0 8px 24px -12px rgb(16 22 43 / 0.12);
@@ -108,6 +109,85 @@ body {
 
 .rise {
   animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+.float-slow {
+  animation: float 4.5s ease-in-out infinite alternate;
+}
+
+.float-slower {
+  animation: float 6s ease-in-out 0.8s infinite alternate;
+}
+
+/* Editorial ticker band */
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+.spin-slow {
+  animation: spin-slow 14s linear infinite;
+}
+
+/* Logo micro-interactions: the gavel taps and the star twirls on hover */
+@keyframes gavel-tap {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  35% { transform: translate(-50%, -50%) rotate(-24deg); }
+  65% { transform: translate(-50%, -50%) rotate(10deg); }
+  100% { transform: translate(-50%, -50%) rotate(0deg); }
+}
+
+@keyframes star-twirl {
+  from { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.35); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+.group:hover .logo-gavel {
+  animation: gavel-tap 0.55s ease;
+}
+
+.group:hover .logo-star {
+  animation: star-twirl 0.7s ease;
+}
+
+/* Nav / footer link underline that draws in on hover */
+.link-draw {
+  position: relative;
+}
+
+.link-draw::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1.5px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link-draw:hover::after,
+.link-draw:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .scrollbar-thin::-webkit-scrollbar { height: 6px; width: 6px; }

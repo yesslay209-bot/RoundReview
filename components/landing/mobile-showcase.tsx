@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import {
   PhoneBottomNav,
   SCREEN_COMPONENTS,
+  type PhoneScreenKey,
   type ScreenKey,
 } from "./phone-screens";
 
@@ -51,33 +52,26 @@ const SCREENS: ScreenInfo[] = [
 ];
 
 export function MobileShowcase() {
-  const [active, setActive] = useState<ScreenKey>("home");
+  const [active, setActive] = useState<PhoneScreenKey>("home");
   const Screen = SCREEN_COMPONENTS[active];
+  // The hidden timer screen keeps "More" highlighted in the tab list.
+  const listKey: ScreenKey = active === "timer" ? "more" : active;
 
   return (
     <section id="mobile" className="relative overflow-hidden bg-white py-24">
-      <div
-        className="absolute -right-24 top-1/4 h-[420px] w-[420px] rounded-full bg-[#EEF0FF] blur-[90px]"
-        aria-hidden
-      />
-      <div
-        className="absolute -left-24 bottom-0 h-[300px] w-[300px] rounded-full bg-[#FDEAF3] blur-[90px]"
-        aria-hidden
-      />
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-2">
         {/* Copy + tab controls */}
         <div>
-          <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-[#5B5BD6]">
+          <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-[#4F46E5]">
             <Smartphone className="size-4" aria-hidden /> Works wherever you compete
           </p>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-[#131834] sm:text-4xl">
-            Your whole season, in your pocket
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-[#191817] sm:text-4xl">
+            Your whole season, <span className="font-serif font-normal italic">in your pocket</span>
           </h2>
-          <p className="mt-4 max-w-lg text-[#5B6178]">
-            No app store needed — {""}
-            the same experience runs in any phone browser. Log rounds between flights, review
-            judge feedback in the hallway, and check your record before elims. Try it: tap the
-            tabs below, or the nav inside the phone.
+          <p className="mt-4 max-w-lg text-[#56534B]">
+            No app store needed — the same experience runs in any phone browser. This demo is
+            fully live: filter the tournaments, search the feedback, complete a goal, even run
+            the debate timer from the More tab.
           </p>
 
           <div className="mt-8 flex flex-col gap-2" role="tablist" aria-label="App screens">
@@ -85,31 +79,31 @@ export function MobileShowcase() {
               <button
                 key={s.key}
                 role="tab"
-                aria-selected={s.key === active}
+                aria-selected={s.key === listKey}
                 onClick={() => setActive(s.key)}
                 className={cn(
                   "group rounded-xl border px-4 py-3 text-left transition-all duration-200",
-                  s.key === active
-                    ? "border-[#C7CBFA] bg-[#EEF0FF] shadow-sm"
-                    : "border-[#E7E8F2] bg-white hover:border-[#C7CBFA] hover:bg-[#FAFAFE]"
+                  s.key === listKey
+                    ? "border-[#191817] bg-[#FAF9F5] shadow-sm"
+                    : "border-[#E7E4DB] bg-white hover:-translate-y-0.5 hover:border-[#191817]"
                 )}
               >
                 <span
                   className={cn(
                     "block text-sm font-bold",
-                    s.key === active ? "text-[#3F3FBF]" : "text-[#3A3F55]"
+                    s.key === listKey ? "text-[#191817]" : "text-[#3A3830]"
                   )}
                 >
                   {s.title}
                 </span>
                 <AnimatePresence initial={false}>
-                  {s.key === active && (
+                  {s.key === listKey && (
                     <motion.span
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25 }}
-                      className="block overflow-hidden text-xs leading-relaxed text-[#5B6178]"
+                      className="block overflow-hidden text-xs leading-relaxed text-[#56534B]"
                     >
                       <span className="block pt-1.5">{s.body}</span>
                     </motion.span>
@@ -137,7 +131,7 @@ export function MobileShowcase() {
                   transition={{ duration: 0.18 }}
                   className="flex min-h-0 flex-1 flex-col"
                 >
-                  <Screen />
+                  <Screen go={setActive} />
                 </motion.div>
               </AnimatePresence>
               <PhoneBottomNav active={active} onSelect={setActive} />
@@ -151,9 +145,9 @@ export function MobileShowcase() {
                   onClick={() => setActive(s.key)}
                   className={cn(
                     "h-1.5 rounded-full transition-all duration-300",
-                    s.key === active
-                      ? "w-6 bg-[#5B5BD6]"
-                      : "w-1.5 bg-[#D9DBEA] hover:bg-[#B9BDDC]"
+                    s.key === listKey
+                      ? "w-6 bg-[#191817]"
+                      : "w-1.5 bg-[#DDD9CE] hover:bg-[#C9C5B8]"
                   )}
                 />
               ))}

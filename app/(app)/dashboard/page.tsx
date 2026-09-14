@@ -1,7 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Flame, MapPin, MessageSquareQuote, Trophy } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  ClipboardCheck,
+  Flame,
+  MapPin,
+  MessageSquareQuote,
+  Plus,
+  Timer,
+  Trophy,
+} from "lucide-react";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,6 +49,24 @@ export default function DashboardPage() {
           {greeting()}, {firstName} 👋
         </h1>
         <p className="mt-1 text-sm text-soft">Here&apos;s how your debate season is looking.</p>
+        {/* Quick actions — one tap to the most common tasks */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {[
+            { href: "/tournaments", label: "Log a round", icon: Plus },
+            { href: "/feedback", label: "Add feedback", icon: MessageSquareQuote },
+            { href: "/timer", label: "Practice timer", icon: Timer },
+            { href: "/checklist", label: "Prep checklist", icon: ClipboardCheck },
+          ].map((a) => (
+            <Link
+              key={a.href}
+              href={a.href}
+              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3.5 py-2 text-xs font-bold text-soft transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+            >
+              <a.icon className="size-3.5" aria-hidden />
+              {a.label}
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* Stat cards */}

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import { Reveal } from "./reveal";
+import { Flower, Starburst, Sticker, WaveDivider } from "./decor";
 
 export function HowItWorks() {
   const steps = [
@@ -22,32 +24,36 @@ export function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="bg-[#FBFBFE] py-24">
+    <section id="how-it-works" className="bg-[#FAF9F5] py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold uppercase tracking-widest text-[#5B5BD6]">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="inline-block rounded-full bg-[#DDE1F8] px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#3D4785]">
             How It Works
           </p>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-[#131834] sm:text-4xl">
-            Your next tournament starts with your last one
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-[#191817] sm:text-4xl">
+            Your next tournament starts with{" "}
+            <span className="font-serif font-normal italic">your last one</span>
           </h2>
-        </div>
+        </Reveal>
         <div className="mt-14 grid gap-5 md:grid-cols-3">
           {steps.map((s, i) => (
-            <div
-              key={s.n}
-              className="relative rounded-2xl border border-[#E7E8F2] bg-white p-7 shadow-[0_1px_2px_rgb(19_24_52/0.04)]"
-            >
-              <span className="font-display text-4xl font-bold text-[#E3E5F4]">{s.n}</span>
-              {i < steps.length - 1 && (
-                <ArrowRight
-                  className="absolute -right-4 top-1/2 hidden size-5 -translate-y-1/2 text-[#C6C9D9] md:block"
-                  aria-hidden
-                />
-              )}
-              <h3 className="mt-3 font-display text-lg font-semibold text-[#131834]">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#5B6178]">{s.body}</p>
-            </div>
+            <Reveal key={s.n} delay={i * 0.1} className="h-full">
+              <div className="group relative h-full rounded-2xl border border-[#E7E4DB] bg-white p-7 transition-all duration-200 hover:-translate-y-1 hover:border-[#191817]">
+                <span className="font-serif text-5xl italic text-[#DDD9CE] transition-colors group-hover:text-[#4F46E5]">
+                  {s.n}
+                </span>
+                {i < steps.length - 1 && (
+                  <ArrowRight
+                    className="absolute -right-4 top-1/2 hidden size-5 -translate-y-1/2 text-[#C9C5B8] md:block"
+                    aria-hidden
+                  />
+                )}
+                <h3 className="mt-3 font-display text-lg font-semibold text-[#191817]">
+                  {s.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#56534B]">{s.body}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -60,47 +66,50 @@ export function AnalyticsPreview() {
   return (
     <section id="analytics" className="bg-white py-24">
       <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-2">
-        <div className="order-2 lg:order-1">
-          <div className="rounded-2xl border border-[#E7E8F2] bg-white p-6 shadow-[0_20px_50px_-24px_rgb(76_82_166/0.3)]">
+        <Reveal className="order-2 lg:order-1">
+          <div className="rounded-2xl border border-[#E7E4DB] bg-white p-6 shadow-[0_24px_50px_-30px_rgb(25_24_23/0.35)]">
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-[#9AA0B5]">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#9B978C]">
                   Win rate by tournament
                 </p>
-                <p className="mt-1 font-display text-3xl font-bold text-[#131834]">70%</p>
+                <p className="mt-1 font-display text-3xl font-bold text-[#191817]">70%</p>
               </div>
-              <span className="rounded-full bg-[#E5F6EE] px-2.5 py-1 text-xs font-bold text-[#12915B]">
+              <span className="rounded-full bg-[#E9F2EC] px-2.5 py-1 text-xs font-bold text-[#2F7A57]">
                 ▲ trending up
               </span>
             </div>
             <div className="mt-6 flex h-36 items-end gap-2.5" aria-hidden>
               {bars.map((h, i) => (
-                <div key={i} className="group relative flex-1 rounded-t-md bg-[#F1F2F9]">
+                <div key={i} className="group relative flex-1 rounded-t-md bg-[#F0EEE6]">
                   <div
-                    className="absolute bottom-0 w-full rounded-t-md bg-gradient-to-t from-[#6366F1] to-[#8B5CF6] transition-all duration-500 group-hover:from-[#5B5BD6] group-hover:to-[#A78BFA]"
+                    className="absolute bottom-0 w-full rounded-t-md bg-[#191817] transition-all duration-300 group-hover:bg-[#4F46E5]"
                     style={{ height: `${h}%` }}
                   />
                 </div>
               ))}
             </div>
-            <div className="mt-5 grid grid-cols-3 gap-3 border-t border-[#ECEDF5] pt-5">
+            <div className="mt-5 grid grid-cols-3 gap-3 border-t border-[#EFEDE6] pt-5">
               {[
                 ["Affirmative", "80%"],
                 ["Negative", "60%"],
                 ["Avg Speaks", "27.9"],
               ].map(([k, v]) => (
                 <div key={k}>
-                  <p className="text-[10px] uppercase tracking-wider text-[#9AA0B5]">{k}</p>
-                  <p className="font-display text-lg font-bold text-[#131834]">{v}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-[#9B978C]">{k}</p>
+                  <p className="font-display text-lg font-bold text-[#191817]">{v}</p>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-        <div className="order-1 lg:order-2">
-          <p className="text-sm font-bold uppercase tracking-widest text-[#5B5BD6]">Analytics</p>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-[#131834] sm:text-4xl">
-            Know your record. Know your strengths. Know what comes next.
+        </Reveal>
+        <Reveal delay={0.1} className="order-1 lg:order-2">
+          <p className="inline-block rounded-full bg-[#E3EDE3] px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#3E6B4A]">
+            Analytics
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-[#191817] sm:text-4xl">
+            Know your record. Know your strengths.{" "}
+            <span className="font-serif font-normal italic">Know what comes next.</span>
           </h2>
           <ul className="mt-6 space-y-3">
             {[
@@ -109,46 +118,85 @@ export function AnalyticsPreview() {
               "Side performance: Affirmative vs. Negative win rates",
               "Improvement areas ranked by how often judges mention them",
             ].map((item) => (
-              <li key={item} className="flex items-start gap-3 text-[#3A3F55]">
-                <Check className="mt-0.5 size-5 shrink-0 text-[#12A96B]" aria-hidden />
+              <li key={item} className="flex items-start gap-3 text-[#3A3830]">
+                <Check className="mt-0.5 size-5 shrink-0 text-[#2F7A57]" aria-hidden />
                 <span className="text-sm leading-relaxed">{item}</span>
               </li>
             ))}
           </ul>
           <Link
-            href="/signup"
-            className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#5B5BD6] transition-colors hover:text-[#3F3FBF]"
+            href="/dashboard"
+            className="link-draw mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#4F46E5]"
           >
-            See where you&apos;re improving <ArrowRight className="size-4" aria-hidden />
+            See it live in the demo <ArrowRight className="size-4" aria-hidden />
           </Link>
-        </div>
+        </Reveal>
       </div>
+    </section>
+  );
+}
+
+/** Full-width typographic brand statement between sections. */
+export function QuoteBand() {
+  return (
+    <section className="relative overflow-hidden bg-[#FAF9F5] py-20">
+      <Flower className="absolute left-10 top-10 hidden w-12 -rotate-12 md:block" color="#F4EBC3" />
+      <Starburst
+        className="spin-slow absolute bottom-12 right-14 hidden w-9 md:block"
+        color="#DDE1F8"
+      />
+      <WaveDivider />
+      <Reveal className="mx-auto max-w-4xl px-4 pt-10 text-center sm:px-6">
+        <p className="font-serif text-4xl italic leading-tight tracking-tight text-[#191817] sm:text-6xl">
+          Every ballot{" "}
+          <span className="rounded-lg bg-[#F9E3EC] px-2 box-decoration-clone">tells you</span>{" "}
+          something.
+        </p>
+        <p className="mx-auto mt-6 max-w-xl text-[#56534B]">
+          {BRAND.name} makes sure you hear it — and turns it into what you practice next.
+        </p>
+      </Reveal>
     </section>
   );
 }
 
 export function FinalCta() {
   return (
-    <section className="bg-[#FBFBFE] pb-24 pt-4">
+    <section className="bg-white pb-24 pt-4">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#5B5BD6] to-[#8B5CF6] px-6 py-16 text-center shadow-[0_30px_70px_-30px_rgb(91_91_214/0.7)]">
-          <div
-            className="absolute -top-24 right-0 h-64 w-64 rounded-full bg-[#EC5C9B]/30 blur-[80px]"
-            aria-hidden
-          />
-          <h2 className="relative font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Turn feedback into progress.
-          </h2>
-          <p className="relative mx-auto mt-4 max-w-md text-white/80">
-            {BRAND.tagline} Start tracking your season in under a minute.
-          </p>
-          <Link
-            href="/signup"
-            className="relative mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-bold text-[#3F3FBF] transition-all hover:bg-[#F0F1FF] active:scale-[0.98]"
-          >
-            Get Started Free <ArrowRight className="size-4" aria-hidden />
-          </Link>
-        </div>
+        <Reveal>
+          <div className="relative overflow-hidden rounded-3xl bg-[#DDE1F8] px-6 py-16 text-center">
+            <Starburst
+              className="spin-slow absolute left-8 top-8 w-8"
+              color="#FAF9F5"
+            />
+            <Flower className="absolute -bottom-4 right-8 w-16 rotate-12" color="#F9E3EC" />
+            <div className="absolute right-10 top-8 hidden rotate-6 sm:block">
+              <Sticker color="butter">free to use</Sticker>
+            </div>
+            <h2 className="relative font-display text-3xl font-bold tracking-tight text-[#191817] sm:text-4xl">
+              Turn feedback into{" "}
+              <span className="font-serif font-normal italic">progress.</span>
+            </h2>
+            <p className="relative mx-auto mt-4 max-w-md text-[#4A4C63]">
+              {BRAND.tagline} Start tracking your season in under a minute.
+            </p>
+            <div className="relative mt-8 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-2 rounded-full bg-[#191817] px-7 py-3.5 text-sm font-bold text-[#FAF9F5] transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-8px_rgb(25_24_23/0.4)] active:translate-y-0"
+              >
+                Get Started Free <ArrowRight className="size-4" aria-hidden />
+              </Link>
+              <Link
+                href="/dashboard"
+                className="link-draw text-sm font-semibold text-[#3D4785]"
+              >
+                or explore the live demo
+              </Link>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -156,20 +204,20 @@ export function FinalCta() {
 
 export function Footer() {
   return (
-    <footer className="border-t border-[#EAEBF3] bg-white">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-[#9AA0B5] sm:flex-row sm:px-6">
-        <p className="font-display font-semibold text-[#3A3F55]">{BRAND.name}</p>
+    <footer className="border-t border-[#E7E4DB] bg-[#FAF9F5]">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-[#9B978C] sm:flex-row sm:px-6">
+        <p className="font-display font-semibold text-[#3A3830]">{BRAND.name}</p>
         <div className="flex gap-6">
-          <a href="#features" className="transition-colors hover:text-[#131834]">
+          <a href="#features" className="link-draw transition-colors hover:text-[#191817]">
             Features
           </a>
-          <a href="#mobile" className="transition-colors hover:text-[#131834]">
+          <a href="#mobile" className="link-draw transition-colors hover:text-[#191817]">
             Mobile
           </a>
-          <Link href="/resources" className="transition-colors hover:text-[#131834]">
+          <Link href="/resources" className="link-draw transition-colors hover:text-[#191817]">
             Resources
           </Link>
-          <Link href="/signin" className="transition-colors hover:text-[#131834]">
+          <Link href="/signin" className="link-draw transition-colors hover:text-[#191817]">
             Sign In
           </Link>
         </div>

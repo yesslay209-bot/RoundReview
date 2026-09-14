@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Gavel } from "lucide-react";
 import { BRAND } from "@/lib/brand";
+import { LogoMark } from "@/components/brand/logo";
 import type { ReactNode } from "react";
 
 export function AuthShell({ children, footer }: { children: ReactNode; footer: ReactNode }) {
@@ -13,11 +13,9 @@ export function AuthShell({ children, footer }: { children: ReactNode; footer: R
       />
       <Link
         href="/"
-        className="relative mb-8 flex items-center gap-2 font-display text-xl font-bold text-[#131834]"
+        className="group relative mb-8 flex items-center gap-2.5 font-display text-xl font-bold text-[#191817]"
       >
-        <span className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6]">
-          <Gavel className="size-4.5 text-white" aria-hidden />
-        </span>
+        <LogoMark className="size-10" />
         {BRAND.name}
       </Link>
       <div className="relative w-full max-w-md rounded-2xl border border-[#E7E8F2] bg-white p-7 shadow-[0_24px_60px_-24px_rgb(76_82_166/0.3)]">
