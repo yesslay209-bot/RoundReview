@@ -186,6 +186,7 @@ function UserFooter() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const pathname = usePathname();
+  const { hydrated } = useAppData();
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => setDrawerOpen(false), [pathname]);
@@ -248,10 +249,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      {/* Content */}
+      {/* Content — rendered after hydration so date- and localStorage-derived
+          values never mismatch the statically exported HTML. */}
       <div className="flex-1 pt-14 lg:pl-60 lg:pt-0">
         <main className="mx-auto max-w-6xl px-4 py-6 pb-24 sm:px-6 lg:py-8 lg:pb-8">
-          {children}
+          {hydrated ? (
+            children
+          ) : (
+            <div className="flex justify-center py-24" aria-label="Loading">
+              <span className="size-8 animate-spin rounded-full border-2 border-line border-t-accent" />
+            </div>
+          )}
         </main>
       </div>
 
