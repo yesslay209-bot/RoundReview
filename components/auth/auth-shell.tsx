@@ -5,25 +5,25 @@ import type { ReactNode } from "react";
 
 export function AuthShell({ children, footer }: { children: ReactNode; footer: ReactNode }) {
   return (
-    <div className="noise relative flex min-h-dvh flex-col items-center justify-center bg-[#070a18] px-4 py-12">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center bg-[#FBFBFE] px-4 py-12">
       <div className="hero-grid absolute inset-0" aria-hidden />
       <div
-        className="absolute top-0 left-1/2 h-72 w-[600px] -translate-x-1/2 rounded-full bg-[#3e5bff]/20 blur-[100px]"
+        className="absolute top-0 left-1/2 h-72 w-[600px] -translate-x-1/2 rounded-full bg-[#E4E7FF] blur-[100px]"
         aria-hidden
       />
       <Link
         href="/"
-        className="relative mb-8 flex items-center gap-2 font-display text-xl font-bold text-white"
+        className="relative mb-8 flex items-center gap-2 font-display text-xl font-bold text-[#131834]"
       >
-        <span className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#3e5bff] to-[#7c5cff]">
+        <span className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6]">
           <Gavel className="size-4.5 text-white" aria-hidden />
         </span>
         {BRAND.name}
       </Link>
-      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-white/[0.04] p-7 shadow-pop backdrop-blur-sm">
+      <div className="relative w-full max-w-md rounded-2xl border border-[#E7E8F2] bg-white p-7 shadow-[0_24px_60px_-24px_rgb(76_82_166/0.3)]">
         {children}
       </div>
-      <p className="relative mt-6 text-sm text-white/40">{footer}</p>
+      <p className="relative mt-6 text-sm text-[#8A90A5]">{footer}</p>
     </div>
   );
 }

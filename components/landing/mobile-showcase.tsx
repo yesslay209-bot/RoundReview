@@ -2,21 +2,22 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, ImageIcon, Smartphone } from "lucide-react";
+import { Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  PhoneBottomNav,
+  SCREEN_COMPONENTS,
+  type ScreenKey,
+} from "./phone-screens";
 
-interface Screen {
-  key: string;
+interface ScreenInfo {
+  key: ScreenKey;
   label: string;
   title: string;
   body: string;
 }
 
-/**
- * Screens map 1:1 to screenshot files dropped into /public/mobile/<key>.png.
- * Images are shown untouched — the phone frame masks them with CSS only.
- */
-const SCREENS: Screen[] = [
+const SCREENS: ScreenInfo[] = [
   {
     key: "home",
     label: "Home",
@@ -27,7 +28,7 @@ const SCREENS: Screen[] = [
     key: "tournaments",
     label: "Tournaments",
     title: "Every tournament, organized",
-    body: "Filter by event type, jump into any tournament, and see your record and average speaks build round by round.",
+    body: "Filter by event, jump into any tournament, and watch your record and average speaks build round by round.",
   },
   {
     key: "feedback",
@@ -39,7 +40,7 @@ const SCREENS: Screen[] = [
     key: "goals",
     label: "Goals",
     title: "Improvement goals that stick",
-    body: "Turn recurring judge comments into active goals, then mark them complete when the ballots stop mentioning them.",
+    body: "Turn recurring judge comments into active goals with progress you can see, then retire them when the ballots stop mentioning them.",
   },
   {
     key: "more",
@@ -49,91 +50,66 @@ const SCREENS: Screen[] = [
   },
 ];
 
-function PhoneScreen({ screen }: { screen: Screen }) {
-  const [failed, setFailed] = useState(false);
-
-  if (failed) {
-    return (
-      <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-[#10162e] px-6 text-center">
-        <ImageIcon className="size-8 text-white/25" aria-hidden />
-        <p className="text-xs font-semibold text-white/60">{screen.label} screen</p>
-        <p className="text-[10px] leading-relaxed text-white/35">
-          Drop your app screenshot at{" "}
-          <code className="rounded bg-white/10 px-1 py-0.5">public/mobile/{screen.key}.png</code>{" "}
-          and it will appear here, uncropped and unedited.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    // eslint-disable-next-line @next/next/no-img-element -- untouched user-provided screenshot, unknown dimensions
-    <img
-      src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/mobile/${screen.key}.png`}
-      alt={`${screen.label} screen of the mobile app`}
-      className="h-full w-full object-cover object-top"
-      onError={() => setFailed(true)}
-    />
-  );
-}
-
 export function MobileShowcase() {
-  const [index, setIndex] = useState(0);
-  const screen = SCREENS[index];
-
-  const go = (dir: 1 | -1) =>
-    setIndex((i) => (i + dir + SCREENS.length) % SCREENS.length);
+  const [active, setActive] = useState<ScreenKey>("home");
+  const Screen = SCREEN_COMPONENTS[active];
 
   return (
-    <section id="mobile" className="relative overflow-hidden py-24">
+    <section id="mobile" className="relative overflow-hidden bg-white py-24">
       <div
-        className="absolute right-0 top-1/3 h-[400px] w-[400px] rounded-full bg-[#7c5cff]/15 blur-[100px]"
+        className="absolute -right-24 top-1/4 h-[420px] w-[420px] rounded-full bg-[#EEF0FF] blur-[90px]"
+        aria-hidden
+      />
+      <div
+        className="absolute -left-24 bottom-0 h-[300px] w-[300px] rounded-full bg-[#FDEAF3] blur-[90px]"
         aria-hidden
       />
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-2">
         {/* Copy + tab controls */}
         <div>
-          <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-[#8ea0ff]">
-            <Smartphone className="size-4" aria-hidden /> Take it to the tournament
+          <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-[#5B5BD6]">
+            <Smartphone className="size-4" aria-hidden /> Works wherever you compete
           </p>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-[#131834] sm:text-4xl">
             Your whole season, in your pocket
           </h2>
-          <p className="mt-4 max-w-lg text-white/55">
-            Log rounds between flights, review judge feedback in the hallway, and check your
-            record before elims. Tap through the app below.
+          <p className="mt-4 max-w-lg text-[#5B6178]">
+            No app store needed — {""}
+            the same experience runs in any phone browser. Log rounds between flights, review
+            judge feedback in the hallway, and check your record before elims. Try it: tap the
+            tabs below, or the nav inside the phone.
           </p>
 
           <div className="mt-8 flex flex-col gap-2" role="tablist" aria-label="App screens">
-            {SCREENS.map((s, i) => (
+            {SCREENS.map((s) => (
               <button
                 key={s.key}
                 role="tab"
-                aria-selected={i === index}
-                onClick={() => setIndex(i)}
+                aria-selected={s.key === active}
+                onClick={() => setActive(s.key)}
                 className={cn(
                   "group rounded-xl border px-4 py-3 text-left transition-all duration-200",
-                  i === index
-                    ? "border-[#3e5bff]/50 bg-[#3e5bff]/10"
-                    : "border-white/10 bg-white/[0.02] hover:border-white/25 hover:bg-white/[0.05]"
+                  s.key === active
+                    ? "border-[#C7CBFA] bg-[#EEF0FF] shadow-sm"
+                    : "border-[#E7E8F2] bg-white hover:border-[#C7CBFA] hover:bg-[#FAFAFE]"
                 )}
               >
                 <span
                   className={cn(
                     "block text-sm font-bold",
-                    i === index ? "text-white" : "text-white/70"
+                    s.key === active ? "text-[#3F3FBF]" : "text-[#3A3F55]"
                   )}
                 >
                   {s.title}
                 </span>
                 <AnimatePresence initial={false}>
-                  {i === index && (
+                  {s.key === active && (
                     <motion.span
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25 }}
-                      className="block overflow-hidden text-xs leading-relaxed text-white/50"
+                      className="block overflow-hidden text-xs leading-relaxed text-[#5B6178]"
                     >
                       <span className="block pt-1.5">{s.body}</span>
                     </motion.span>
@@ -145,55 +121,44 @@ export function MobileShowcase() {
         </div>
 
         {/* Phone frame */}
-        <div className="flex items-center justify-center gap-4">
-          <button
-            onClick={() => go(-1)}
-            aria-label="Previous screen"
-            className="rounded-full border border-white/15 p-2.5 text-white/60 transition-colors hover:border-white/40 hover:text-white"
-          >
-            <ChevronLeft className="size-5" />
-          </button>
-
-          <div className="relative w-[270px] shrink-0 sm:w-[300px]">
-            <div className="relative aspect-[9/19] overflow-hidden rounded-[2.6rem] border-[10px] border-[#1a2038] bg-[#10162e] shadow-[0_30px_90px_-20px_rgb(62_91_255/0.4)]">
+        <div className="flex justify-center">
+          <div className="relative w-[280px] shrink-0 sm:w-[300px]">
+            <div className="relative flex aspect-[9/19] flex-col overflow-hidden rounded-[2.6rem] border-[10px] border-[#1E2340] bg-[#F6F7FB] shadow-[0_30px_80px_-24px_rgb(37_42_92/0.45)]">
               {/* Notch */}
-              <div className="absolute left-1/2 top-2 z-10 h-5 w-24 -translate-x-1/2 rounded-full bg-[#1a2038]" />
+              <div className="absolute left-1/2 top-2 z-10 h-4.5 w-24 -translate-x-1/2 rounded-full bg-[#1E2340]" />
+              {/* Status bar spacer */}
+              <div className="h-8 shrink-0 bg-[#F6F7FB]" />
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={screen.key}
-                  initial={{ opacity: 0, scale: 1.02 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.99 }}
-                  transition={{ duration: 0.25 }}
-                  className="h-full w-full"
+                  key={active}
+                  initial={{ opacity: 0, x: 14 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.18 }}
+                  className="flex min-h-0 flex-1 flex-col"
                 >
-                  <PhoneScreen screen={screen} />
+                  <Screen />
                 </motion.div>
               </AnimatePresence>
+              <PhoneBottomNav active={active} onSelect={setActive} />
             </div>
             {/* Dots */}
             <div className="mt-5 flex justify-center gap-2" aria-hidden>
-              {SCREENS.map((s, i) => (
+              {SCREENS.map((s) => (
                 <button
                   key={s.key}
                   tabIndex={-1}
-                  onClick={() => setIndex(i)}
+                  onClick={() => setActive(s.key)}
                   className={cn(
                     "h-1.5 rounded-full transition-all duration-300",
-                    i === index ? "w-6 bg-[#8ea0ff]" : "w-1.5 bg-white/20 hover:bg-white/40"
+                    s.key === active
+                      ? "w-6 bg-[#5B5BD6]"
+                      : "w-1.5 bg-[#D9DBEA] hover:bg-[#B9BDDC]"
                   )}
                 />
               ))}
             </div>
           </div>
-
-          <button
-            onClick={() => go(1)}
-            aria-label="Next screen"
-            className="rounded-full border border-white/15 p-2.5 text-white/60 transition-colors hover:border-white/40 hover:text-white"
-          >
-            <ChevronRight className="size-5" />
-          </button>
         </div>
       </div>
     </section>

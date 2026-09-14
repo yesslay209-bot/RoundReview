@@ -7,12 +7,11 @@ import {
   FinalCta,
   Footer,
   HowItWorks,
-  Pricing,
 } from "@/components/landing/sections";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-dvh bg-[#070a18] text-white">
+    <div className="min-h-dvh bg-white text-[#131834]">
       <LandingNavbar />
       <main>
         <Hero />
@@ -20,7 +19,6 @@ export default function LandingPage() {
         <HowItWorks />
         <AnalyticsPreview />
         <MobileShowcase />
-        <Pricing />
         <FinalCta />
       </main>
       <Footer />

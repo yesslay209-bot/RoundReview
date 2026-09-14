@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CalendarDays, LayoutList, Plus } from "lucide-react";
+import { CalendarDays, Download, LayoutList, Plus } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { TournamentCard } from "@/components/tournaments/tournament-card";
 import { TournamentCalendar } from "@/components/tournaments/calendar";
 import { TournamentFormDialog } from "@/components/tournaments/tournament-form";
+import { TabroomImportDialog } from "@/components/tournaments/tabroom-import";
 import { useAppData } from "@/lib/store";
 import { nextTournamentCountdown, seasonStats } from "@/lib/stats";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ export default function TournamentsPage() {
   const { data } = useAppData();
   const [view, setView] = useState<"list" | "calendar">("list");
   const [formOpen, setFormOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<Tournament | null>(null);
 
   const next = nextTournamentCountdown(data);
@@ -69,6 +71,9 @@ export default function TournamentsPage() {
                 <CalendarDays className="size-3.5" aria-hidden /> Calendar
               </button>
             </div>
+            <Button variant="outline" onClick={() => setImportOpen(true)}>
+              <Download className="size-4" aria-hidden /> Import from Tabroom
+            </Button>
             <Button
               onClick={() => {
                 setEditing(null);
@@ -167,6 +172,7 @@ export default function TournamentsPage() {
         onClose={() => setFormOpen(false)}
         tournament={editing}
       />
+      <TabroomImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
     </div>
   );
 }

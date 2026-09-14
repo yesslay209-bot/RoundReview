@@ -52,7 +52,6 @@ lib/
   repositories/     Data-access layer (localStorage today; swap for
                     Supabase/Firebase/Postgres without touching the UI)
   timer-formats.ts  Speech time presets per debate format
-public/mobile/      Drop mobile app screenshots here for the landing showcase
 ```
 
 ## Data & auth
