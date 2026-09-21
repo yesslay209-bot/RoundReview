@@ -1,16 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
   ArrowRight,
   CalendarDays,
   ClipboardCheck,
+  Download,
   Flame,
   MapPin,
   MessageSquareQuote,
   Plus,
+  Sparkles,
   Timer,
   Trophy,
+  X,
 } from "lucide-react";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +28,58 @@ import {
   seasonStats,
 } from "@/lib/stats";
 import { formatDateRange } from "@/lib/utils";
+
+const WELCOME_KEY = "roundready.welcome.dismissed";
+
+/** Dismissible first-visit banner pointing demo visitors at the good stuff. */
+function WelcomeBanner() {
+  const [visible, setVisible] = useState(() => {
+    try {
+      return window.localStorage.getItem(WELCOME_KEY) !== "1";
+    } catch {
+      return true;
+    }
+  });
+  if (!visible) return null;
+  const dismiss = () => {
+    setVisible(false);
+    try {
+      window.localStorage.setItem(WELCOME_KEY, "1");
+    } catch {
+      // storage unavailable — banner just returns next visit
+    }
+  };
+  return (
+    <div className="relative overflow-hidden rounded-xl2 border border-accent/20 bg-accent/5 px-5 py-4">
+      <button
+        onClick={dismiss}
+        aria-label="Dismiss welcome message"
+        className="absolute right-3 top-3 rounded-lg p-1.5 text-faint transition-colors hover:bg-card2 hover:text-ink"
+      >
+        <X className="size-4" />
+      </button>
+      <p className="flex items-center gap-2 text-sm font-bold">
+        <Sparkles className="size-4 text-accent" aria-hidden />
+        Welcome — this is a demo season
+      </p>
+      <p className="mt-1 max-w-2xl pr-8 text-sm text-soft">
+        Every number here is sample data you can edit, so click around freely. Ready to make
+        it yours? Paste your own results straight from Tabroom, or reset the demo anytime in
+        Settings.
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Link href="/tournaments">
+          <Button size="sm">
+            <Download className="size-3.5" aria-hidden /> Import from Tabroom
+          </Button>
+        </Link>
+        <Button size="sm" variant="ghost" onClick={dismiss}>
+          Got it
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 function greeting() {
   const h = new Date().getHours();
@@ -44,6 +100,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <WelcomeBanner />
       <div>
         <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
           {greeting()}, {firstName} 👋

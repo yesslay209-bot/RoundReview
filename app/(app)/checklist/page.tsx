@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { ConfettiBurst } from "@/components/ui/confetti";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,19 @@ export default function ChecklistPage() {
   const total = data.checklist.length;
   const percent = total === 0 ? 0 : Math.round((done / total) * 100);
 
+  // Confetti when the last item gets checked off.
+  const [celebrate, setCelebrate] = useState(false);
+  const prevPercent = useRef(percent);
+  useEffect(() => {
+    if (total > 0 && percent === 100 && prevPercent.current < 100) {
+      setCelebrate(true);
+      const t = window.setTimeout(() => setCelebrate(false), 3000);
+      prevPercent.current = percent;
+      return () => window.clearTimeout(t);
+    }
+    prevPercent.current = percent;
+  }, [percent, total]);
+
   const submitNew = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
@@ -44,6 +58,7 @@ export default function ChecklistPage() {
 
   return (
     <div>
+      {celebrate && <ConfettiBurst />}
       <PageHeader
         title="Tournament Checklist"
         subtitle="Walk into your next tournament prepared."

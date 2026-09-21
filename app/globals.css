@@ -145,13 +145,13 @@ body {
   animation: spin-slow 14s linear infinite;
 }
 
-/* Logo micro-interactions: the podium hops and the star twirls on hover */
+/* Logo micro-interactions: the podium does a small contained hop and the
+   star twirls on hover. Keep the hop subtle so it stays inside the bubble. */
 @keyframes podium-hop {
-  0% { transform: translate(-50%, -50%); }
-  30% { transform: translate(-50%, -64%) rotate(-5deg); }
-  60% { transform: translate(-50%, -46%); }
-  80% { transform: translate(-50%, -54%); }
-  100% { transform: translate(-50%, -50%); }
+  0% { transform: translate(-50%, -50%) scale(1); }
+  30% { transform: translate(-50%, -55%) scale(1.04, 0.96) rotate(-3deg); }
+  60% { transform: translate(-50%, -48%) scale(0.97, 1.03); }
+  100% { transform: translate(-50%, -50%) scale(1); }
 }
 
 @keyframes star-twirl {
@@ -166,6 +166,23 @@ body {
 
 .group:hover .logo-star {
   animation: star-twirl 0.7s ease;
+}
+
+/* Celebration confetti (checklist completion) */
+@keyframes confetti-fall {
+  0% { transform: translate(0, -10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--dx), 105vh) rotate(var(--rot)); opacity: 0.6; }
+}
+
+.confetti-piece {
+  position: fixed;
+  top: 0;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: confetti-fall 2.4s ease-in var(--delay) forwards;
+  opacity: 0;
 }
 
 /* Nav / footer link underline that draws in on hover */

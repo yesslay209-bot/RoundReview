@@ -60,6 +60,14 @@ function beep(freq: number, durationMs: number) {
   }
 }
 
+function Kbd({ children }: { children: React.ReactNode }) {
+  return (
+    <kbd className="rounded border border-line bg-card2 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-soft">
+      {children}
+    </kbd>
+  );
+}
+
 export default function TimerPage() {
   const { data } = useAppData();
   const { warningSound, final30Alert } = data.settings;
@@ -163,6 +171,28 @@ export default function TimerPage() {
     document.addEventListener("fullscreenchange", onChange);
     return () => document.removeEventListener("fullscreenchange", onChange);
   }, []);
+
+  // Keyboard shortcuts so the timer is usable mid-practice without the mouse.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (editorOpen || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (remaining === 0) loadSpeech(format, speechIndex);
+        else setRunning((r) => !r);
+      } else if (e.key === "r" || e.key === "R") {
+        loadSpeech(format, speechIndex);
+      } else if (e.key === "ArrowRight") {
+        go(1);
+      } else if (e.key === "ArrowLeft") {
+        go(-1);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editorOpen, remaining, format, speechIndex, loadSpeech]);
 
   const saveCustom = (fmt: TimerFormat) => {
     setCustomFormat(fmt);
@@ -311,6 +341,11 @@ export default function TimerPage() {
                     ({formatClock(format.speeches[speechIndex + 1].seconds)})
                   </p>
                 )}
+
+                <p className="mt-5 hidden items-center gap-1.5 text-xs text-faint sm:flex">
+                  <Kbd>Space</Kbd> start/pause · <Kbd>R</Kbd> reset · <Kbd>←</Kbd>
+                  <Kbd>→</Kbd> switch speech
+                </p>
               </>
             ) : (
               <p className="text-sm text-soft">Add a speech to your custom format to begin.</p>
