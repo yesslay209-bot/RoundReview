@@ -44,10 +44,14 @@ export interface Round {
   id: string;
   tournamentId: string;
   roundNumber: number;
+  /** Elimination-round name (e.g. "Quarters") shown instead of "R<n>". */
+  label?: string;
   opponent: string;
   side: Side;
   result: RoundResult;
   speakerPoints: number | null;
+  /** Judge name(s) — panels in elimination rounds have several. */
+  judges?: string[];
   feedbackId: string | null;
 }
 

@@ -165,12 +165,17 @@ function TournamentDetail() {
                 <ul className="divide-y divide-line">
                   {rounds.map((r) => (
                     <li key={r.id} className="flex flex-wrap items-center gap-3 py-3">
-                      <span className="w-16 shrink-0 text-sm font-bold">R{r.roundNumber}</span>
+                      <span className="w-16 shrink-0 text-sm font-bold">
+                        {r.label ?? `R${r.roundNumber}`}
+                      </span>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold">vs {r.opponent}</p>
-                        <p className="text-xs text-faint">
+                        <p className="truncate text-xs text-faint">
                           {r.side}
                           {r.speakerPoints != null && ` · ${r.speakerPoints} speaks`}
+                          {r.judges?.length
+                            ? ` · ${r.judges.length > 1 ? "Panel" : "Judge"}: ${r.judges.join(", ")}`
+                            : ""}
                         </p>
                       </div>
                       <ResultBadge result={r.result} />

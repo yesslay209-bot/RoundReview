@@ -41,7 +41,11 @@ export function FeedbackFormDialog({ open, onClose, feedback, defaultRoundId }: 
   useEffect(() => {
     if (!open) return;
     setRoundId(feedback?.roundId ?? defaultRoundId ?? availableRounds[0]?.id ?? "");
-    setJudgeName(feedback?.judgeName ?? "");
+    // Prefill the judge from the round when it was imported with one attached.
+    const roundJudge = defaultRoundId
+      ? data.rounds.find((r) => r.id === defaultRoundId)?.judges?.[0]
+      : undefined;
+    setJudgeName(feedback?.judgeName ?? roundJudge ?? "");
     setDate(feedback?.date ?? todayIso());
     setText(feedback?.feedback ?? "");
     setStrengths(feedback?.strengths.join("\n") ?? "");

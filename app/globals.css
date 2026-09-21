@@ -145,12 +145,13 @@ body {
   animation: spin-slow 14s linear infinite;
 }
 
-/* Logo micro-interactions: the gavel taps and the star twirls on hover */
-@keyframes gavel-tap {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  35% { transform: translate(-50%, -50%) rotate(-24deg); }
-  65% { transform: translate(-50%, -50%) rotate(10deg); }
-  100% { transform: translate(-50%, -50%) rotate(0deg); }
+/* Logo micro-interactions: the podium hops and the star twirls on hover */
+@keyframes podium-hop {
+  0% { transform: translate(-50%, -50%); }
+  30% { transform: translate(-50%, -64%) rotate(-5deg); }
+  60% { transform: translate(-50%, -46%); }
+  80% { transform: translate(-50%, -54%); }
+  100% { transform: translate(-50%, -50%); }
 }
 
 @keyframes star-twirl {
@@ -159,8 +160,8 @@ body {
   to { transform: rotate(360deg) scale(1); }
 }
 
-.group:hover .logo-gavel {
-  animation: gavel-tap 0.55s ease;
+.group:hover .logo-glyph {
+  animation: podium-hop 0.6s ease;
 }
 
 .group:hover .logo-star {

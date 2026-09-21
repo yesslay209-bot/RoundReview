@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,32 @@ import { parseTabroomResults } from "@/lib/tabroom-import";
 import { DEBATE_FORMATS, type DebateFormat } from "@/lib/types";
 import { todayIso } from "@/lib/utils";
 
-const SAMPLE = `1\tAff\tHarrison West\tW\t28.5
-2\tNeg\tPriya Raman\tL\t27.9
-3\tAff\tCole Bennett\tW\t28.2`;
+const SAMPLE = `Chuck Ballingall Memorial Invitational
+Varsity Lincoln Douglas (VLD)
+Your Code: ModernBrain GC
+Quarters
+Sun 2:50 PM
+502\tNeg\tPeninsula SP\t
+Delgado, Norma
+L
+Millimet, Dylan
+W
+Vasudeva, Ishaan
+L
+Round 2
+Sat 11:30 AM
+Flt 1
+108a\tAff\tMarlborough ST\t
+Oliveros, Miguel
+28.1
+L
+Round 1
+Sat 8:45 AM
+Flt 1
+600s Bio Lab\tNeg\tHarvard-Westlake HP\t
+Mirza, Sabeeh
+29
+W`;
 
 export function TabroomImportDialog({
   open,
@@ -31,8 +54,20 @@ export function TabroomImportDialog({
   const [date, setDate] = useState(todayIso());
   const [format, setFormat] = useState<DebateFormat>("Lincoln-Douglas");
   const [raw, setRaw] = useState("");
+  // Remember what we auto-filled so a user's manual edit is never overwritten.
+  const lastAutoName = useRef("");
 
   const parsed = useMemo(() => parseTabroomResults(raw), [raw]);
+
+  const onRawChange = (value: string) => {
+    setRaw(value);
+    const p = parseTabroomResults(value);
+    if (p.tournamentName && (name === "" || name === lastAutoName.current)) {
+      setName(p.tournamentName);
+      lastAutoName.current = p.tournamentName;
+    }
+    if (p.format) setFormat(p.format);
+  };
 
   const importResults = () => {
     const tournament = addTournament({
@@ -49,10 +84,12 @@ export function TabroomImportDialog({
       addRound({
         tournamentId: tournament.id,
         roundNumber: r.roundNumber,
+        label: r.label,
         opponent: r.opponent,
         side: r.side,
         result: r.result,
         speakerPoints: r.speakerPoints,
+        judges: r.judges.length ? r.judges : undefined,
       });
     }
     toast(`Imported ${parsed.rounds.length} rounds — analytics updated`);
@@ -64,10 +101,10 @@ export function TabroomImportDialog({
     <Dialog open={open} onClose={onClose} title="Import from Tabroom" wide>
       <div className="space-y-4">
         <p className="text-sm leading-relaxed text-soft">
-          On Tabroom, open your entry&apos;s results table, select the round rows, copy them,
-          and paste below. Each pasted row becomes a round — the parser picks up the round
-          number, side (Aff/Neg/Pro/Con), result (W/L or ballot counts like 2-1), opponent,
-          and speaker points.
+          On Tabroom, open your entry page for the tournament, select everything from the
+          tournament name down through your last round, copy, and paste below. Each round is
+          recognized with its opponent, side, result, speaker points, and judge — including
+          elimination rounds, where the result comes from the panel&apos;s majority ballot.
         </p>
 
         <div className="grid gap-4 sm:grid-cols-3">
@@ -78,7 +115,7 @@ export function TabroomImportDialog({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Berkeley Invitational"
+              placeholder="Auto-detected from the paste"
             />
           </div>
           <div>
@@ -102,11 +139,11 @@ export function TabroomImportDialog({
         <div>
           <div className="mb-1.5 flex items-center justify-between">
             <Label htmlFor="ti-raw" className="mb-0">
-              Pasted Results
+              Pasted Entry Page
             </Label>
             <button
               type="button"
-              onClick={() => setRaw(SAMPLE)}
+              onClick={() => onRawChange(SAMPLE)}
               className="text-xs font-semibold text-accent hover:text-accent-strong"
             >
               Paste sample data
@@ -115,9 +152,9 @@ export function TabroomImportDialog({
           <Textarea
             id="ti-raw"
             value={raw}
-            onChange={(e) => setRaw(e.target.value)}
-            placeholder={"1   Aff   Harrison West   W   28.5\n2   Neg   Priya Raman   L   27.9"}
-            className="min-h-32 font-mono text-xs"
+            onChange={(e) => onRawChange(e.target.value)}
+            placeholder={"Round 1\nSat 8:45 AM\n600s Bio Lab   Neg   Harvard-Westlake HP\nMirza, Sabeeh\n29\nW"}
+            className="min-h-36 font-mono text-xs"
           />
         </div>
 
@@ -126,26 +163,34 @@ export function TabroomImportDialog({
             <p className="mb-2 text-xs font-bold text-soft">
               Preview — {parsed.rounds.length} {parsed.rounds.length === 1 ? "round" : "rounds"}{" "}
               recognized
-              {parsed.skipped > 0 && `, ${parsed.skipped} line${parsed.skipped === 1 ? "" : "s"} skipped`}
+              {parsed.skipped > 0 &&
+                `, ${parsed.skipped} block${parsed.skipped === 1 ? "" : "s"} skipped`}
             </p>
             {parsed.rounds.length > 0 ? (
               <ul className="divide-y divide-line">
                 {parsed.rounds.map((r) => (
-                  <li key={r.roundNumber} className="flex items-center gap-3 py-1.5 text-sm">
-                    <span className="w-8 shrink-0 font-bold">R{r.roundNumber}</span>
-                    <span className="min-w-0 flex-1 truncate">vs {r.opponent}</span>
-                    <span className="shrink-0 text-xs text-faint">{r.side}</span>
-                    {r.speakerPoints != null && (
-                      <span className="shrink-0 text-xs text-faint">{r.speakerPoints}</span>
+                  <li key={r.roundNumber} className="py-2 text-sm">
+                    <div className="flex items-center gap-3">
+                      <span className="w-16 shrink-0 font-bold">{r.label ?? `R${r.roundNumber}`}</span>
+                      <span className="min-w-0 flex-1 truncate">vs {r.opponent}</span>
+                      <span className="shrink-0 text-xs text-faint">{r.side}</span>
+                      {r.speakerPoints != null && (
+                        <span className="shrink-0 text-xs text-faint">{r.speakerPoints}</span>
+                      )}
+                      <ResultBadge result={r.result} />
+                    </div>
+                    {r.judges.length > 0 && (
+                      <p className="ml-16 mt-0.5 truncate pl-3 text-xs text-faint">
+                        {r.judges.length > 1 ? "Panel" : "Judge"}: {r.judges.join(" · ")}
+                      </p>
                     )}
-                    <ResultBadge result={r.result} />
                   </li>
                 ))}
               </ul>
             ) : (
               <p className="text-xs text-faint">
-                No rounds recognized yet — make sure each line includes a W or L (or a ballot
-                count like 2-1).
+                No rounds recognized yet — make sure each round block includes its result
+                (the W or L lines under each judge).
               </p>
             )}
           </div>

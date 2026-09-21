@@ -199,7 +199,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           href="/dashboard"
           className="group flex items-center gap-2.5 px-6 py-5 font-display text-lg font-bold"
         >
-          <LogoMark className="size-9" bubbleClass="text-ink" gavelClass="text-card" />
+          <LogoMark className="size-9" bubbleClass="text-ink" glyphClass="text-card" />
           {BRAND.name}
         </Link>
         <NavLinks />
@@ -209,7 +209,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Mobile top bar */}
       <header className="fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between border-b border-line bg-card/90 px-4 backdrop-blur-lg lg:hidden">
         <Link href="/dashboard" className="group flex items-center gap-2 font-display font-bold">
-          <LogoMark className="size-7" bubbleClass="text-ink" gavelClass="text-card" />
+          <LogoMark className="size-7" bubbleClass="text-ink" glyphClass="text-card" />
           {BRAND.name}
         </Link>
         <button
@@ -232,7 +232,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="absolute inset-y-0 left-0 flex w-72 flex-col bg-card shadow-pop">
             <div className="flex items-center justify-between px-5 py-4">
               <span className="group flex items-center gap-2 font-display font-bold">
-                <LogoMark className="size-7" bubbleClass="text-ink" gavelClass="text-card" />
+                <LogoMark className="size-7" bubbleClass="text-ink" glyphClass="text-card" />
                 {BRAND.name}
               </span>
               <button
