@@ -17,7 +17,12 @@ import type {
   Tournament,
   User,
 } from "./types";
-import { loadAppData, resetAppData, saveAppData } from "./repositories/local-repository";
+import {
+  loadAppData,
+  resetAppData,
+  saveAppData,
+  startFreshSeason,
+} from "./repositories/local-repository";
 import { MOCK_DATA } from "./mock-data";
 import { uid } from "./utils";
 
@@ -40,6 +45,8 @@ interface Store {
   deleteChecklistItem: (id: string) => void;
   resetChecklist: () => void;
   resetAll: () => void;
+  /** Wipe to a blank season, keeping the user profile. Queues the tutorial. */
+  startFresh: () => void;
 }
 
 const StoreContext = createContext<Store | null>(null);
@@ -219,6 +226,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setData(resetAppData());
   }, []);
 
+  const startFresh = useCallback(() => {
+    startFreshSeason(data.user);
+    setData(loadAppData());
+  }, [data.user]);
+
   return (
     <StoreContext.Provider
       value={{
@@ -240,6 +252,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         deleteChecklistItem,
         resetChecklist,
         resetAll,
+        startFresh,
       }}
     >
       {children}

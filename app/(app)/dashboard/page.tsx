@@ -21,6 +21,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress";
 import { FormPill } from "@/components/analytics/charts";
+import { GettingStarted } from "@/components/onboarding/getting-started";
+import { OnboardingTutorial } from "@/components/onboarding/tutorial";
+import {
+  clearTutorial,
+  getDataMode,
+  isTutorialPending,
+} from "@/lib/repositories/local-repository";
 import { useAppData } from "@/lib/store";
 import {
   improvementTagCounts,
@@ -31,11 +38,12 @@ import { formatDateRange } from "@/lib/utils";
 
 const WELCOME_KEY = "roundready.welcome.dismissed";
 
-/** Dismissible first-visit banner pointing demo visitors at the good stuff. */
+/** Dismissible banner pointing demo visitors at the good stuff. Only shows
+ * for the sample season — real accounts get the onboarding tour instead. */
 function WelcomeBanner() {
   const [visible, setVisible] = useState(() => {
     try {
-      return window.localStorage.getItem(WELCOME_KEY) !== "1";
+      return getDataMode() === "demo" && window.localStorage.getItem(WELCOME_KEY) !== "1";
     } catch {
       return true;
     }
@@ -96,11 +104,20 @@ export default function DashboardPage() {
   const latestFeedback = [...data.feedback].sort((a, b) => b.date.localeCompare(a.date))[0];
   const done = data.checklist.filter((c) => c.completed).length;
   const total = data.checklist.length;
-  const firstName = data.user.name.split(" ")[0];
+  const firstName = data.user.name.split(" ")[0] || "Debater";
+
+  // First visit after sign-up: walk through entering real season data.
+  const [showTutorial, setShowTutorial] = useState(() => isTutorialPending());
+  const closeTutorial = () => {
+    clearTutorial();
+    setShowTutorial(false);
+  };
 
   return (
     <div className="space-y-6">
+      {showTutorial && <OnboardingTutorial onClose={closeTutorial} />}
       <WelcomeBanner />
+      {!showTutorial && <GettingStarted />}
       <div>
         <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
           {greeting()}, {firstName} 👋
@@ -229,11 +246,17 @@ export default function DashboardPage() {
             <CardTitle>Recent Performance</CardTitle>
           </CardHeader>
           <CardBody>
-            <div className="flex gap-2">
-              {stats.recentForm.map((r) => (
-                <FormPill key={r.id} result={r.result} size="lg" />
-              ))}
-            </div>
+            {stats.recentForm.length === 0 ? (
+              <p className="text-sm text-soft">
+                Your last five results will appear here once you log rounds.
+              </p>
+            ) : (
+              <div className="flex gap-2">
+                {stats.recentForm.map((r) => (
+                  <FormPill key={r.id} result={r.result} size="lg" />
+                ))}
+              </div>
+            )}
             {stats.bestTournament && (
               <div className="mt-4 flex items-center gap-2.5 rounded-lg bg-card2 px-3 py-2.5">
                 <Trophy className="size-4 shrink-0 text-warn" aria-hidden />

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthShell, GoogleIcon } from "@/components/auth/auth-shell";
-import { DEBATE_FORMATS } from "@/lib/types";
+import { startFreshSeason } from "@/lib/repositories/local-repository";
+import { DEBATE_FORMATS, type DebateFormat } from "@/lib/types";
 
 const inputClass =
   "w-full rounded-lg border border-[#D9DBEA] bg-white px-3.5 py-2.5 text-sm text-[#131834] placeholder:text-[#B7BBCB] focus:border-[#5B5BD6] transition-colors";
@@ -14,7 +15,8 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Mock sign-up; swap for a real auth provider later.
+  // Mock sign-up; swap for a real auth provider later. A new account starts
+  // a blank season (no demo placeholders) and queues the onboarding tour.
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -24,6 +26,12 @@ export default function SignUpPage() {
     }
     setError(null);
     setLoading(true);
+    startFreshSeason({
+      name: String(form.get("name") ?? ""),
+      email: String(form.get("email") ?? ""),
+      school: String(form.get("school") ?? ""),
+      debateFormat: String(form.get("format") ?? "Lincoln-Douglas") as DebateFormat,
+    });
     setTimeout(() => router.push("/dashboard"), 500);
   };
 
@@ -117,7 +125,10 @@ export default function SignUpPage() {
       </div>
 
       <button
-        onClick={() => router.push("/dashboard")}
+        onClick={() => {
+          startFreshSeason({});
+          router.push("/dashboard");
+        }}
         className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-[#D9DBEA] py-2.5 text-sm font-semibold text-[#3A3F55] transition-colors hover:border-[#B9BDDC]"
       >
         <GoogleIcon /> Continue with Google

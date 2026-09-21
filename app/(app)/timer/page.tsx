@@ -13,6 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
+import { TIMER_VISITED_KEY } from "@/components/onboarding/getting-started";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/form";
@@ -169,6 +170,12 @@ export default function TimerPage() {
   useEffect(() => {
     const onChange = () => setFullscreen(Boolean(document.fullscreenElement));
     document.addEventListener("fullscreenchange", onChange);
+    // Mark the getting-started "try the timer" task as done.
+    try {
+      window.localStorage.setItem(TIMER_VISITED_KEY, "1");
+    } catch {
+      // ignore
+    }
     return () => document.removeEventListener("fullscreenchange", onChange);
   }, []);
 

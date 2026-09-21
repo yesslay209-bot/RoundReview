@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Monitor, Moon, Sun } from "lucide-react";
+import { GraduationCap, Monitor, Moon, Sparkles, Sun } from "lucide-react";
+import { requestTutorial } from "@/lib/repositories/local-repository";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,11 +18,13 @@ import { cn } from "@/lib/utils";
 const EXPERIENCE_LEVELS = ["Novice", "JV", "Varsity", "Open"] as const;
 
 export default function SettingsPage() {
-  const { data, updateUser, updateSettings, resetAll } = useAppData();
+  const { data, updateUser, updateSettings, resetAll, startFresh } = useAppData();
   const toast = useToast();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
+  const [freshOpen, setFreshOpen] = useState(false);
   const [profile, setProfile] = useState<User>(data.user);
 
   useEffect(() => setMounted(true), []);
@@ -229,18 +233,44 @@ export default function SettingsPage() {
           </CardBody>
         </Card>
 
-        {/* Data */}
+        {/* Data & onboarding */}
         <Card>
           <CardHeader>
             <CardTitle>Data</CardTitle>
           </CardHeader>
-          <CardBody className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm text-soft">
-              Restore the sample season data. This replaces all your local changes.
-            </p>
-            <Button variant="danger" size="sm" onClick={() => setResetOpen(true)}>
-              Reset Demo Data
-            </Button>
+          <CardBody className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="max-w-xs text-sm text-soft">
+                Replay the getting-started tour that shows where everything goes.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  requestTutorial();
+                  router.push("/dashboard");
+                }}
+              >
+                <GraduationCap className="size-3.5" aria-hidden /> Show Tutorial
+              </Button>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+              <p className="max-w-xs text-sm text-soft">
+                Clear every tournament, round, and ballot to start a new season. Your profile
+                is kept.
+              </p>
+              <Button variant="outline" size="sm" onClick={() => setFreshOpen(true)}>
+                <Sparkles className="size-3.5" aria-hidden /> Start Blank Season
+              </Button>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+              <p className="max-w-xs text-sm text-soft">
+                Restore the sample season data. This replaces all your local changes.
+              </p>
+              <Button variant="danger" size="sm" onClick={() => setResetOpen(true)}>
+                Reset Demo Data
+              </Button>
+            </div>
           </CardBody>
         </Card>
 
@@ -251,6 +281,18 @@ export default function SettingsPage() {
         </div>
       </form>
 
+      <ConfirmDialog
+        open={freshOpen}
+        onClose={() => setFreshOpen(false)}
+        title="Start Blank Season"
+        message="Delete all tournaments, rounds, feedback, and checklist progress so you can enter your own season from scratch? Your profile and settings are kept."
+        confirmLabel="Start Fresh"
+        onConfirm={() => {
+          startFresh();
+          toast("Fresh season started — the tour will show you around");
+          router.push("/dashboard");
+        }}
+      />
       <ConfirmDialog
         open={resetOpen}
         onClose={() => setResetOpen(false)}
